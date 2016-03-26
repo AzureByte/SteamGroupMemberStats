@@ -106,6 +106,17 @@
       { "name" : "Fallout 4", "gameid" : "123329", "numberOfPlayers": 27485},
       { "name" : "ARK: Survival Evolved", "gameid" : "123330", "numberOfPlayers": 27370},
     ];
+
+    //Shuffle the array to get a more rugged look in the pie chart
+    //Implementing the Fisher-Yates shuffle as described here "https://en.wikipedia.org/wiki/Fisher-Yates_shuffle#The_modern_algorithm"
+    for (var i = sampData.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = sampData[i];
+        sampData[i] = sampData[j];
+        sampData[j] = temp;
+    }
+
+
     var sdata = [];
     var names = [];
     var colours = [];
