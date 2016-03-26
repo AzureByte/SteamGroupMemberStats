@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script src="https://d3js.org/d3.v4.0.0-alpha.4.min.js"></script>
+  <style>
+
+    text {
+      font: 10px sans-serif;
+    }
+
+  </style>
+</head>
+<body>
+  
+  <canvas width="300" height="500"></canvas>
+  
+  <script>
+    //// Functions
+
+    // The converter fucntion is based on the ruby implementation by Martin Ankerl "http://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/" and has not been checked for accuracy.
+    function hsv_to_rgb (h, s, v) {
+      
+      var r, g, b;
+      var p, q, t;
+      var h_i, f;
+      
+      h_i = Math.floor(h*6);
+      f = h*6 - h_i;
+      p = v * (1 - s);
+      q = v * (1 - f*s);
+      t = v * (1 - (1-f)*s);
+
+      switch(h_i) {
+        case 0:
+          r = v; g = t; b = p;
+          break;
+        case 1:
+          r = q; g = v; b = p;
+          break;
+        case 2:
+          r = p; g = v; b = t;
+          break;
+        case 3:
+          r = p; g = q; b = v;
+          break;
+        case 4:
+          r = t; g = p; b = v;
+          break;
+        default:
+          r = v; g = p; b = q;
+          break;
+      }
+      return "#" + Math.floor(r*256).toString(16)
+                 + Math.floor(g*256).toString(16)
+                 + Math.floor(b*256).toString(16);
+    }
+
+    // Based off the golden ratio conjugate described by Martin Ankerl "http://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/" to make colours more readable with black text.
+    function RandomColour(){
+      gcr=0.618033988749895;
+      var r = Math.random();
+      r += gcr;
+      r %= 1;
+      return hsv_to_rgb(r, 0.5, 0.95)
+    }
+
+
+    //// Graphing the chart
+    // Initialize the data
+    var data = [1,23,16,5,75];
+
+    var canvas = document.querySelector("canvas"),
+        context = canvas.getContext("2d");
+
+    var width = canvas.width,
+        height = canvas.height,
+        radius = Math.min(height, width)/2;
+
+    var colours = [];
+
+    // Populate the array with random colours
+    for (var i = 0; i < 10; i++) {
+      colours[i] = RandomColour();
+    };
+
+    // Draw the piechart
+    var arc = d3.arc()
+                .outerRadius(radius - 10)
+                .innerRadius(0)
+                .padAngle(0.03)
+                .context(context);
+
+    var pie = d3.pie();
+
+    var arcs = pie(data);
+
+    context.translate(width / 2, height /2);
+
+    context.globalAlpha = 0.5;
+    arcs.forEach(
+      function(d,i) {
+        context.beginPath();
+        arc(d);
+        context.fillStyle = colours[i];
+        context.fill();
+      }
+    );
+
+    context.globalAlpha = 1;
+    context.beginPath();
+    arcs.forEach(arc);
+    context.lineWidth = 2;
+    context.stroke();
+  </script>
+</body>
+</html>
