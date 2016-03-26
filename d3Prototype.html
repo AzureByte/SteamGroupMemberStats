@@ -12,19 +12,19 @@
   </style>
 </head>
 <body>
-  
+
   <canvas width="300" height="500"></canvas>
-  
+
   <script>
     //// Functions
 
     // The converter fucntion is based on the ruby implementation by Martin Ankerl "http://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/" and has not been checked for accuracy.
     function hsv_to_rgb (h, s, v) {
-      
+
       var r, g, b;
       var p, q, t;
       var h_i, f;
-      
+
       h_i = Math.floor(h*6);
       f = h*6 - h_i;
       p = v * (1 - s);
