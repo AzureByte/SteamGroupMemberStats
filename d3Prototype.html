@@ -62,13 +62,30 @@
       var r = Math.random();
       r += gcr;
       r %= 1;
-      return hsv_to_rgb(r, 0.5, 0.95)
+      return hsv_to_rgb(r, 0.80, 0.80)
     }
 
 
     //// Graphing the chart
     // Initialize the data
-    var data = [1,23,16,5,75];
+    var sampData = [
+      { "name" : "Dota 2", "gameid" : "123321", "numberOfPlayers": 932474},
+      { "name" : "Counter-Strike: Global Offensive", "gameid" : "123322", "numberOfPlayers": 297220},
+      { "name" : "Team Fortress 2", "gameid" : "123323", "numberOfPlayers": 54002},
+      { "name" : "Tom Clancy's The Division", "gameid" : "123324", "numberOfPlayers": 50007},
+      { "name" : "Grand Theft Auto V", "gameid" : "123325", "numberOfPlayers": 42798},
+      { "name" : "Warframe", "gameid" : "123326", "numberOfPlayers": 31640},
+      { "name" : "Sid Meier's Civilization V", "gameid" : "123327", "numberOfPlayers": 29243},
+      { "name" : "Football Manager 2016", "gameid" : "123328", "numberOfPlayers": 28598},
+      { "name" : "Fallout 4", "gameid" : "123329", "numberOfPlayers": 27485},
+      { "name" : "ARK: Survival Evolved", "gameid" : "123330", "numberOfPlayers": 27370},
+    ];
+    var data = [];
+    var names = [];
+    for (var i = sampData.length - 1; i >= 0; i--) {
+      data[i] = sampData[i].numberOfPlayers;
+      names[i] = sampData[i].name;
+    };
 
     var canvas = document.querySelector("canvas"),
         context = canvas.getContext("2d");
