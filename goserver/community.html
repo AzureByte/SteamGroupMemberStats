@@ -46,7 +46,18 @@
 </head>
 <body>
 <div class="jumbotron">
-	<h2>Displaying data for Steam Community Id {{.Title}}</h2>
+	<h2>Displaying data for
+    <script>
+    var a = {{.Title}};
+    if(a*1 == a)
+    {
+      document.write("Steam Community Id : ");
+    }
+    else {
+      document.write("Steam Community Group - ")
+    }
+    </script>
+    {{.Title}}</h2>
 </div>
 <div class="container-fluid">
 	<div id="gameslist" class="col-md-6"></div>

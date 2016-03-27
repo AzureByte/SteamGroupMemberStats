@@ -40,7 +40,9 @@ func (j *JsonFile) save() error {
 }
 
 func handler(r_writer http.ResponseWriter, req *http.Request) {
-    fmt.Fprintf(r_writer, "This should load the home page!", "")
+    pg := &Page{}
+    t, _ := template.ParseFiles("index.html")
+    t.Execute(r_writer, pg)
 }
 
 func currentlyPlayingHandler (r_writer http.ResponseWriter, req *http.Request) {
