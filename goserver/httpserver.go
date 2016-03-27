@@ -6,6 +6,7 @@ import (
     "net/http"
     "html/template"
     //"encoding/json"
+    "encoding/xml"
 )
 
 type Page struct {
@@ -17,6 +18,20 @@ type Page struct {
 type JsonFile struct {
     Name string
     Data []byte
+}
+type XMLMemberList struct {
+    XMLName xml.Name `xml:"memberList"`
+    Members []XMLMember `xml:"members"`
+}
+
+type XMLMember struct {
+    XMLName xml.Name `xml:"members"`
+    steamIDs []XMLsteamID `xml:"steamID64"`
+}
+
+type XMLsteamID struct {
+    XMLName xml.Name `xml:"steamID64"`
+    steamID string `xml:"steamID64"`
 }
 
 func (j *JsonFile) save() error {
@@ -32,6 +47,36 @@ func currentlyPlayingHandler (r_writer http.ResponseWriter, req *http.Request) {
     communityid := req.URL.Path[len("/community/"):]
 
     //Get data from SteamAPI here.
+
+    groupDataReq, err := http.Get("http://steamcommunity.com/groups/SteamMusic/memberslistxml/?xml=1");
+
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    contents, err := ioutil.ReadAll(groupDataReq.Body)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+
+    fmt.Println("Printing response:")
+    //fmt.Printf("%s\n", string(contents))
+
+    var v XMLMemberList
+
+    xml.Unmarshal([]byte(string(contents)), &v)
+
+    fmt.Printf("\t%s\n", v)
+
+    if err != nil {
+        fmt.Printf("error: %v", err)
+        return
+    }
+    for _, xMember := range v.Members {
+        fmt.Printf("\t%s\n", xMember)
+    }
+
 
 
     const data = `{ "topgames" : [
