@@ -24,6 +24,6 @@ From the goserver folder, run the following command:
 
 Regardless of the OS, it will create a server on port 8888
 
-Visit http://localhost:8888/ to view the App. Then click on any of the communities listed to get a breakdown of the games people are playing.
+Visit [http://localhost:8888/](http://localhost:8888/) to view the App. Then click on any of the communities listed to get a breakdown of the games people are playing.
 
 Note : It currently only shows hardcoded data obtained from the [Steam Stats page](http://store.steampowered.com/stats/).
