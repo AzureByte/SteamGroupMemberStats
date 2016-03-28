@@ -1,4 +1,4 @@
-# SteamGroupMemberStats
+# SteamGroupMemberStats [![Build Status](https://travis-ci.org/AzureByte/SteamGroupMemberStats.svg?branch=master)](https://travis-ci.org/AzureByte/SteamGroupMemberStats)
 
 
 An attempt at visualizing Steam Community data. This project aims at helping moderators and group owners better know the games their members are playing and how active their community is.
