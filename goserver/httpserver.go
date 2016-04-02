@@ -5,8 +5,9 @@ import (
     "io/ioutil"
     "net/http"
     "html/template"
+    "strings"
+    "math"
     //"encoding/json"
-    "encoding/xml"
 )
 
 type Page struct {
@@ -18,20 +19,6 @@ type Page struct {
 type JsonFile struct {
     Name string
     Data []byte
-}
-type XMLMemberList struct {
-    XMLName xml.Name `xml:"memberList"`
-    Members []XMLMember `xml:"members"`
-}
-
-type XMLMember struct {
-    XMLName xml.Name `xml:"members"`
-    steamIDs []XMLsteamID `xml:"steamID64"`
-}
-
-type XMLsteamID struct {
-    XMLName xml.Name `xml:"steamID64"`
-    steamID string `xml:"steamID64"`
 }
 
 func (j *JsonFile) save() error {
@@ -48,35 +35,11 @@ func handler(r_writer http.ResponseWriter, req *http.Request) {
 func currentlyPlayingHandler (r_writer http.ResponseWriter, req *http.Request) {
     communityid := req.URL.Path[len("/community/"):]
 
-    //Get data from SteamAPI here.
+    // Get data from SteamAPI
+    memberslistxml := getMembersListXML(communityid)
+    memberslist := getSteamIdsFromXmlResponse(memberslistxml)
+    SteamIDs := getSteamIdsFromXmlResponse(string(memberslist));
 
-    groupDataReq, err := http.Get("http://steamcommunity.com/groups/SteamMusic/memberslistxml/?xml=1");
-
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-    contents, err := ioutil.ReadAll(groupDataReq.Body)
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-
-    fmt.Println("Printing response:")
-    //fmt.Printf("%s\n", string(contents))
-
-    var v XMLMemberList
-
-    xml.Unmarshal([]byte(string(contents)), &v)
-
-    fmt.Printf("\t%s\n", v)
-
-    if err != nil {
-        fmt.Printf("error: %v", err)
-        return
-    }
-    for _, xMember := range v.Members {
-        fmt.Printf("\t%s\n", xMember)
     }
 
 
@@ -116,4 +79,47 @@ func main() {
     http.HandleFunc("/", handler)
     http.HandleFunc("/community/", currentlyPlayingHandler)
     http.ListenAndServe(":8888", nil)
+}
+
+
+
+// Get group details from XML API
+func getMembersListXML(communityId string) string {
+
+    // Check whether the community id is an integer and format the request accordingly.
+    commIdAsInt, err := strconv.Atoi(communityId)
+
+    if err != nil && commIdAsInt > 0 {
+        resp, err := http.Get("https://steamcommunity.com/gid/" + commIdAsInt + "/memberslistxml/?xml=1") // Note when getting data via gid, despite requesting https, Steam will return data via http
+    } else {
+        resp, err := http.Get("https://steamcommunity.com/groups/" + communityId + "/memberslistxml/?xml=1")
+    }
+    defer resp.Body.Close()
+
+    memberslistxmlbytes, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        panic(fmt.Println("Error :",err))
+    }
+
+    return string(memberslistxmlbytes)
+}
+
+
+// Hack to retrieve the steamIds via the XML
+func getSteamIdsFromXmlResponse(xml string) []string {
+
+    // Exlude the first chunk before the IDs
+    steamIDs := strings.SplitAfter(xml, "<steamID64>")[1:]
+
+    // Replace the xml tags in each of the elements
+    for i := 0; i < len(steamIDs); i++ {
+        steamIDs[i] = strings.Replace(steamIDs[i], "</steamID64>\r\n", "", -1)
+        steamIDs[i] = strings.Replace(steamIDs[i], "<steamID64>", "", -1)
+    }
+
+    // Replace the last part of the xml Doc
+    lastEle := steamIDs[len(steamIDs)-1]
+    steamIDs[len(steamIDs)-1] = strings.SplitN(lastEle, "</members>", 2)[0]
+
+    return steamIDs
 }
