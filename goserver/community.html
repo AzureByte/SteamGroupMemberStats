@@ -4,7 +4,6 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <script src="https://d3js.org/d3.v3.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
   <style>
 
@@ -120,7 +119,7 @@ function RandomColour(){
 var sData = {{.Data}};
 sData = sData.replace('\"', '"');
 var sDoc = JSON.parse(sData);
-var sampData = sDoc.topgames;
+var sampData = sDoc.TopGames;
 //Shuffle the array to get a more rugged look in the pie chart
 //Implementing the Fisher-Yates shuffle as described here "https://en.wikipedia.org/wiki/Fisher-Yates_shuffle#The_modern_algorithm"
 for (var i = sampData.length - 1; i > 0; i--) {
@@ -135,8 +134,8 @@ var sdata = [];
 var names = [];
 var colours = [];
 for (var i = sampData.length - 1; i >= 0; i--) {
-  sdata[i] = sampData[i].numberOfPlayers;
-  names[i] = sampData[i].name;
+  sdata[i] = sampData[i].NumberOfPlayers;
+  names[i] = sampData[i].Name;
   colours[i] = RandomColour();
 };
 
